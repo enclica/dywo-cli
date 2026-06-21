@@ -1,0 +1,554 @@
+<template>
+  <div id="app">
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <span class="hero-badge">Powered by DYWO</span>
+        <h1 class="hero-title">{{ projectName }}</h1>
+        <p class="hero-subtitle">{{ subtitle }}</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" dywo-on:click="scrollToFeatures">
+            Explore Features
+            <span class="btn-arrow">&darr;</span>
+          </button>
+          <a href="https://github.com/bluethefoxofficial/dywo-cli" target="_blank" rel="noopener" class="btn btn-ghost btn-lg">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features-section">
+      <div class="section-header">
+        <h2 class="section-title">Why DYWO?</h2>
+        <p class="section-desc">{{ truncate(featuresDesc, 80) }}</p>
+      </div>
+      <div class="features-grid">
+        <div
+          dywo-for="feature in features"
+          dywo-class="feature-card, featured: feature.highlighted"
+        >
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3 class="feature-title">{{ capitalize(feature.title) }}</h3>
+          <p class="feature-desc">{{ feature.desc }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-section">
+      <div class="section-header">
+        <h2 class="section-title">Reactivity In Action</h2>
+        <p class="section-desc">Click the button and watch state update in real time.</p>
+      </div>
+      <div class="demo-card">
+        <div class="counter-display">
+          <span class="counter-value" dywo-class="pulse: animating">{{ count }}</span>
+          <span class="counter-label">{{ counterLabel }}</span>
+        </div>
+        <div class="counter-actions">
+          <button class="btn btn-ghost" dywo-on:click="decrement">&minus;</button>
+          <button class="btn btn-primary" dywo-on:click="increment">+</button>
+        </div>
+        <div class="counter-presets">
+          <button
+            dywo-for="preset in presets"
+            class="btn btn-sm btn-outline"
+            dywo-class="active: count === preset.value"
+            dywo-on:click="setCount"
+          >
+            {{ preset.label }}
+          </button>
+        </div>
+        <div dywo-show="count > 10" class="counter-milestone">
+          You passed 10! DYWO reactivity is fast.
+        </div>
+        <button class="btn btn-sm btn-ghost" dywo-on:click="reset" dywo-show="count !== 0">
+          Reset
+        </button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <p class="footer-copy">&copy; {{ year }} {{ projectName }}. Built with DYWO.</p>
+        <p class="footer-tagline">No bloat. No virtual DOM. Just speed.</p>
+      </div>
+    </footer>
+  </div>
+</template>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #818cf8;
+  --color-accent: #06b6d4;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-light: #94a3b8;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f8fafc;
+  --color-bg-card: #ffffff;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --max-width: 1100px;
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: white;
+}
+
+.hero {
+  position: relative;
+  padding: 7rem 2rem 5rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 25%, #f0f9ff 50%, #ecfdf5 75%, #faf5ff 100%);
+  z-index: 0;
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 0.375rem 1rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  margin-bottom: 1.25rem;
+}
+
+.hero-subtitle {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-lg {
+  padding: 0.875rem 1.75rem;
+  font-size: 1rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 1px 2px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.btn-ghost:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-light);
+  background: var(--color-bg-alt);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.btn-outline:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-outline.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-arrow {
+  transition: transform var(--transition-fast);
+}
+
+.btn:hover .btn-arrow {
+  transform: translateY(2px);
+}
+
+.features-section,
+.demo-section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 5rem 2rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.section-desc {
+  font-size: 1.0625rem;
+  color: var(--color-text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.feature-card {
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
+}
+
+.feature-card:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.feature-card.featured {
+  border-color: rgba(99, 102, 241, 0.2);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.02), rgba(6, 182, 212, 0.02));
+}
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-alt);
+}
+
+.feature-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.feature-desc {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.demo-card {
+  max-width: 420px;
+  margin: 0 auto;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.counter-display {
+  margin-bottom: 2rem;
+}
+
+.counter-value {
+  display: block;
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-primary);
+  line-height: 1;
+  transition: transform var(--transition-fast);
+}
+
+.counter-value.pulse {
+  animation: pulse 300ms ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.counter-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.counter-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.counter-actions .btn {
+  min-width: 56px;
+  justify-content: center;
+  font-size: 1.25rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.counter-presets {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.counter-milestone {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(16, 185, 129, 0.08);
+  color: #065f46;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.footer {
+  margin-top: auto;
+  background: var(--color-text);
+  color: var(--color-text-light);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.footer-copy {
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.footer-tagline {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 5rem 1.25rem 3rem;
+  }
+
+  .features-section,
+  .demo-section {
+    padding: 3rem 1.25rem;
+  }
+
+  .demo-card {
+    padding: 1.5rem;
+  }
+}
+</style>
+
+<script>
+export default {
+  name: 'App',
+  data() {
+    return {
+      projectName: '{{PROJECT_NAME}}',
+      subtitle: 'A lightweight framework that compiles your components into blazing-fast static sites. No bloat, no virtual DOM, just pure performance.',
+      featuresDesc: 'Everything you need to build modern websites with minimal overhead and maximum developer experience.',
+      count: 0,
+      animating: false,
+      features: [
+        { icon: '&#9889;', title: 'single file components', desc: 'Write HTML, CSS, and JS together in intuitive .dywo files. No configuration headaches.', highlighted: false },
+        { icon: '&#128640;', title: 'zero runtime overhead', desc: 'Tiny 4kb runtime with no virtual DOM. Your pages load instantly, every time.', highlighted: true },
+        { icon: '&#128295;', title: 'modern tooling', desc: 'PostCSS, Babel, code splitting, and tree shaking built right in. Ship optimized code by default.', highlighted: false },
+        { icon: '&#128736;', title: 'reactive data binding', desc: 'Two-way binding, computed properties, and event handling with a clean, declarative syntax.', highlighted: false },
+        { icon: '&#128230;', title: 'built-in routing', desc: 'SPA and multi-page routing with dynamic parameters, guards, and transitions out of the box.', highlighted: false },
+        { icon: '&#128260;', title: 'legacy migration', desc: 'Convert existing HTML, CSS, and JS sites into DYWO projects with a single command.', highlighted: false }
+      ],
+      presets: [
+        { label: '0', value: 0 },
+        { label: '10', value: 10 },
+        { label: '50', value: 50 },
+        { label: '100', value: 100 }
+      ]
+    };
+  },
+  computed: {
+    counterLabel: function() {
+      if (this.count === 0) return 'Click + to start counting';
+      if (this.count === 1) return '1 click';
+      return this.count + ' clicks';
+    }
+  },
+  methods: {
+    increment: function() {
+      this.count = this.count + 1;
+      this.triggerPulse();
+    },
+    decrement: function() {
+      if (this.count > 0) {
+        this.count = this.count - 1;
+        this.triggerPulse();
+      }
+    },
+    setCount: function(e) {
+      var value = e.preset.value;
+      this.count = value;
+      this.triggerPulse();
+    },
+    reset: function() {
+      this.count = 0;
+      this.triggerPulse();
+    },
+    triggerPulse: function() {
+      var self = this;
+      self.animating = true;
+      setTimeout(function() {
+        self.animating = false;
+      }, 300);
+    },
+    scrollToFeatures: function() {
+      var el = document.getElementById('features');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+};
+</script>

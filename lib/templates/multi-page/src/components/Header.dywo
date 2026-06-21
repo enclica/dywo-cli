@@ -1,0 +1,265 @@
+<template>
+  <header class="site-header" dywo-class="{ scrolled: isScrolled }">
+    <div class="header-inner">
+      <a href="/" class="brand">
+        <span class="brand-mark">&#9670;</span>
+        <span class="brand-name">{{ siteName }}</span>
+      </a>
+
+      <button
+        class="hamburger"
+        dywo-on:click="toggleMenu"
+        dywo-class="{ active: menuOpen }"
+        aria-label="Toggle navigation"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav" dywo-class="{ open: menuOpen }">
+        <ul class="nav-links">
+          <li dywo-for="link in links">
+            <a
+              href="{{ link.href }}"
+              dywo-class="{ active: currentPage === link.id }"
+              dywo-on:click="closeMenu"
+            >{{ link.label }}</a>
+          </li>
+        </ul>
+        <a href="/contact" class="nav-cta" dywo-on:click="closeMenu">Get Started</a>
+      </nav>
+    </div>
+  </header>
+</template>
+
+<style scoped>
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.site-header.scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom-color: var(--color-border, #e5e7eb);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.header-inner {
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--color-text, #0f172a);
+  letter-spacing: -0.02em;
+  transition: opacity 0.2s ease;
+}
+
+.brand:hover { opacity: 0.8; }
+
+.brand-mark {
+  color: var(--color-primary, #6366f1);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  color: var(--color-text-muted, #64748b);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--color-text, #0f172a);
+  background: var(--color-bg-alt, #f1f5f9);
+}
+
+.nav-links a.active {
+  color: var(--color-primary, #6366f1);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  background: var(--color-primary, #6366f1);
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(99, 102, 241, 0.3);
+}
+
+.nav-cta:hover {
+  background: var(--color-primary-dark, #4f46e5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.hamburger:hover { background: var(--color-bg-alt, #f1f5f9); }
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--color-text, #0f172a);
+  border-radius: 2px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .header-inner { padding: 0 1.25rem; height: 64px; }
+
+  .hamburger { display: flex; }
+
+  .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-links a {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+  }
+
+  .nav-cta {
+    margin-left: 0;
+    margin-top: 0.5rem;
+    justify-content: center;
+    padding: 0.75rem;
+  }
+}
+</style>
+
+<script>
+export default {
+  name: 'Header',
+  props: ['currentPage'],
+  data() {
+    return {
+      siteName: '{{PROJECT_NAME}}',
+      menuOpen: false,
+      isScrolled: false,
+      links: [
+        { id: 'index', label: 'Home', href: '/' },
+        { id: 'about', label: 'About', href: '/about' },
+        { id: 'contact', label: 'Contact', href: '/contact' }
+      ]
+    };
+  },
+  methods: {
+    toggleMenu() {
+      this.menuOpen = !this.menuOpen;
+    },
+    closeMenu() {
+      this.menuOpen = false;
+    },
+    handleScroll() {
+      this.isScrolled = window.scrollY > 10;
+    }
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll);
+    this.handleScroll();
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+};
+</script>

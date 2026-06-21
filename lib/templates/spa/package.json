@@ -1,0 +1,13 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "description": "A DYWO single-page application",
+  "scripts": {
+    "dev": "dywo dev",
+    "build": "dywo build",
+    "serve": "dywo serve",
+    "analyze": "dywo analyze"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

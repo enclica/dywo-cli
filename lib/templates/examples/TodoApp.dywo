@@ -1,0 +1,258 @@
+<template>
+  <div class="todo-app" dywo-system="todoSystem">
+    <h1 class="todo-title">Todo List</h1>
+
+    <div class="todo-input-row">
+      <input
+        type="text"
+        class="todo-input"
+        dywo-bind:value="newItem"
+        dywo-emit="textChanged"
+        dywo-send="newItem"
+        placeholder="What needs to be done?"
+      />
+      <button
+        class="btn btn-primary"
+        dywo-trigger="todoSystem:addItem"
+        dywo-trigger-on="click"
+        dywo-trigger-data="newItem"
+      >
+        Add
+      </button>
+    </div>
+
+    <ul class="todo-list" dywo-connect="todoSystem" dywo-action="addItem">
+      <li dywo-for="(task, index) in tasks" dywo-class="todo-item, completed: task.done">
+        <label class="todo-check">
+          <input type="checkbox" dywo-bind:checked="task.done" />
+          <span class="todo-text">{{ task.text }}</span>
+        </label>
+        <button class="todo-remove" dywo-on:click="removeTask">&times;</button>
+      </li>
+    </ul>
+
+    <div class="todo-footer" dywo-show="tasks.length > 0">
+      <span class="todo-count">{{ completedCount }} of {{ tasks.length }} completed</span>
+      <button class="btn btn-sm btn-ghost" dywo-on:click="clearCompleted" dywo-show="completedCount > 0">
+        Clear completed
+      </button>
+    </div>
+
+    <div class="todo-empty" dywo-show="tasks.length === 0">
+      No tasks yet. Add one above!
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.todo-app {
+  max-width: 580px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.todo-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.todo-input-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  color: #1e293b;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+.todo-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  background: #fff;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms;
+}
+
+.btn-primary {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-ghost:hover {
+  color: #1e293b;
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: #f8fafc;
+  transition: background 150ms;
+}
+
+.todo-item:hover {
+  background: #f1f5f9;
+}
+
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.todo-check {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  flex: 1;
+}
+
+.todo-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #6366f1;
+  cursor: pointer;
+}
+
+.todo-text {
+  font-size: 0.9375rem;
+  color: #1e293b;
+}
+
+.todo-remove {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 150ms;
+}
+
+.todo-item:hover .todo-remove {
+  opacity: 1;
+}
+
+.todo-remove:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.todo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.todo-count {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.todo-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #94a3b8;
+  font-size: 0.9375rem;
+}
+</style>
+
+<script>
+export default {
+  name: 'TodoApp',
+  data() {
+    return {
+      newItem: '',
+      tasks: [
+        { text: 'Learn DYWO systems', done: true },
+        { text: 'Build a connected component', done: false },
+        { text: 'Deploy to production', done: false }
+      ]
+    };
+  },
+  computed: {
+    completedCount: function() {
+      return this.tasks.filter(function(t) { return t.done; }).length;
+    }
+  },
+  methods: {
+    addItem: function(text) {
+      var t = (typeof text === 'string' ? text : this.newItem).trim();
+      if (!t) return;
+      this.tasks.push({ text: t, done: false });
+      this.newItem = '';
+    },
+    removeTask: function(e) {
+      var index = this.tasks.indexOf(e.task);
+      if (index > -1) this.tasks.splice(index, 1);
+    },
+    clearCompleted: function() {
+      this.tasks = this.tasks.filter(function(t) { return !t.done; });
+    }
+  }
+};
+</script>

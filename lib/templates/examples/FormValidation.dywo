@@ -1,0 +1,359 @@
+<template>
+  <div class="form-app" dywo-system="formSystem">
+    <h1 class="form-title">Registration Form</h1>
+    <p class="form-subtitle">All fields are validated in real-time via the system bus.</p>
+
+    <form class="form" dywo-on:submit.prevent="handleSubmit">
+      <div class="form-group">
+        <label class="form-label" for="name">Full Name</label>
+        <input
+          id="name"
+          type="text"
+          class="form-input"
+          dywo-bind:value="name"
+          dywo-emit="fieldChanged"
+          dywo-send="name"
+          dywo-class="form-input, invalid: nameError"
+          placeholder="John Doe"
+        />
+        <span class="form-error" dywo-show="nameError">{{ nameError }}</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          class="form-input"
+          dywo-bind:value="email"
+          dywo-emit="fieldChanged"
+          dywo-send="email"
+          dywo-class="form-input, invalid: emailError"
+          placeholder="john@example.com"
+        />
+        <span class="form-error" dywo-show="emailError">{{ emailError }}</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          class="form-input"
+          dywo-bind:value="password"
+          dywo-emit="fieldChanged"
+          dywo-send="password"
+          dywo-class="form-input, invalid: passwordError"
+          placeholder="Min 8 characters"
+        />
+        <span class="form-error" dywo-show="passwordError">{{ passwordError }}</span>
+        <div class="password-strength" dywo-show="password.length > 0">
+          <div class="strength-bar">
+            <div class="strength-fill" dywo-bind:style="'width: ' + strengthPercent + '%'"></div>
+          </div>
+          <span class="strength-label">{{ strengthLabel }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-check-label">
+          <input type="checkbox" dywo-bind:checked="agreeTerms" dywo-emit="termsChanged" />
+          I agree to the terms and conditions
+        </label>
+        <span class="form-error" dywo-show="termsError">{{ termsError }}</span>
+      </div>
+
+      <div
+        class="form-validator"
+        dywo-connect="formSystem"
+        dywo-action="validate"
+        dywo-on="fieldChanged:validate, termsChanged:validate"
+      ></div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-block"
+        dywo-bind:disabled="!isFormValid"
+        dywo-class="btn btn-primary btn-block, disabled: !isFormValid"
+      >
+        {{ submitting ? 'Submitting...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <div class="form-success" dywo-show="submitted">
+      <span class="success-icon">&#10003;</span>
+      <h2>Account Created!</h2>
+      <p>Welcome, {{ name }}. Your account has been successfully created.</p>
+      <button class="btn btn-ghost" dywo-on:click="resetForm">Start Over</button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.form-app {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+  font-size: 0.9375rem;
+  color: #64748b;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.375rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  color: #1e293b;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+.form-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  background: #fff;
+}
+
+.form-input.invalid {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-error {
+  display: block;
+  font-size: 0.8125rem;
+  color: #ef4444;
+  margin-top: 0.375rem;
+  font-weight: 500;
+}
+
+.form-check-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.form-check-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #6366f1;
+}
+
+.password-strength {
+  margin-top: 0.5rem;
+}
+
+.strength-bar {
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 300ms, background 300ms;
+  background: #ef4444;
+}
+
+.strength-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-primary {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.btn-primary.disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-ghost:hover {
+  color: #1e293b;
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.form-validator {
+  display: none;
+}
+
+.form-success {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #10b981;
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.form-success h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.form-success p {
+  font-size: 0.9375rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+</style>
+
+<script>
+export default {
+  name: 'FormValidation',
+  data() {
+    return {
+      name: '',
+      email: '',
+      password: '',
+      agreeTerms: false,
+      nameError: '',
+      emailError: '',
+      passwordError: '',
+      termsError: '',
+      submitting: false,
+      submitted: false
+    };
+  },
+  computed: {
+    isFormValid: function() {
+      return this.name.trim().length >= 2
+        && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)
+        && this.password.length >= 8
+        && this.agreeTerms
+        && !this.nameError
+        && !this.emailError
+        && !this.passwordError;
+    },
+    strengthPercent: function() {
+      var p = this.password;
+      if (!p) return 0;
+      var score = 0;
+      if (p.length >= 8) score += 25;
+      if (p.length >= 12) score += 15;
+      if (/[A-Z]/.test(p)) score += 20;
+      if (/[0-9]/.test(p)) score += 20;
+      if (/[^A-Za-z0-9]/.test(p)) score += 20;
+      return Math.min(score, 100);
+    },
+    strengthLabel: function() {
+      var p = this.strengthPercent;
+      if (p < 30) return 'Weak';
+      if (p < 60) return 'Fair';
+      if (p < 85) return 'Good';
+      return 'Strong';
+    }
+  },
+  methods: {
+    validate: function() {
+      this.nameError = this.name.trim().length < 2 ? 'Name must be at least 2 characters' : '';
+      this.emailError = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email) ? '' : 'Please enter a valid email';
+      this.passwordError = this.password.length < 8 ? 'Password must be at least 8 characters' : '';
+      this.termsError = this.agreeTerms ? '' : 'You must agree to the terms';
+    },
+    handleSubmit: function() {
+      this.validate();
+      if (!this.isFormValid) return;
+      this.submitting = true;
+      var self = this;
+      setTimeout(function() {
+        self.submitting = false;
+        self.submitted = true;
+      }, 1500);
+    },
+    resetForm: function() {
+      this.name = '';
+      this.email = '';
+      this.password = '';
+      this.agreeTerms = false;
+      this.nameError = '';
+      this.emailError = '';
+      this.passwordError = '';
+      this.termsError = '';
+      this.submitted = false;
+    }
+  }
+};
+</script>

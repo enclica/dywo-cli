@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{PROJECT_NAME}} - Built with DYWO">
+  <title>{{PROJECT_NAME}}</title>
+  <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="/" class="nav-logo">{{PROJECT_NAME}}</a>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">Welcome to {{PROJECT_NAME}}</h1>
+        <p class="hero-subtitle">A modern, lightning-fast website built with pure HTML, CSS, and JavaScript. No frameworks, no bloat—just clean code.</p>
+        <div class="hero-buttons">
+          <a href="#features" class="btn btn-primary">Explore Features</a>
+          <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <div class="container">
+        <h2 class="section-title">Why Choose Vanilla?</h2>
+        <p class="section-subtitle">Simple, fast, and future-proof</p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Blazing Fast</h3>
+            <p>Zero framework overhead means instant load times and smooth interactions on any device.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>DYWO Optimized</h3>
+            <p>Automatic bundling, minification, and compression. Ship the smallest possible payload.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>Modern CSS</h3>
+            <p>Custom properties, grid layouts, and smooth animations. Beautiful by default.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3>Easy to Maintain</h3>
+            <p>Clean, readable code that any developer can understand and modify.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Fully Responsive</h3>
+            <p>Mobile-first design that looks perfect on screens of all sizes.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🚀</div>
+            <h3>Live Reload</h3>
+            <p>Instant feedback during development. Save and see changes immediately.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2 class="section-title">Let's Connect</h2>
+        <p class="section-subtitle">Have a question or want to work together?</p>
+        <form id="contact-form" class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="john@example.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell us about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+          <div id="form-status" class="form-status" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; <span id="year"></span> {{PROJECT_NAME}}. Built with <a href="https://github.com/bluethefoxofficial/dywo-cli" target="_blank" rel="noopener">DYWO</a>.</p>
+    </div>
+  </footer>
+
+  <script src="./scripts/main.js"></script>
+</body>
+</html>

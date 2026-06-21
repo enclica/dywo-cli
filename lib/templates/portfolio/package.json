@@ -1,0 +1,14 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "description": "Portfolio site built with DYWO",
+  "private": true,
+  "scripts": {
+    "dev": "dywo dev",
+    "build": "dywo build",
+    "serve": "dywo serve"
+  },
+  "devDependencies": {
+    "dywo": "^2.0.0"
+  }
+}

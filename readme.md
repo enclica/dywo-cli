@@ -1,18 +1,25 @@
-# Dywo CLI
+<p align="center">
+  <img src="assets/dywo-icon.svg" alt="Dywo" width="128" height="128">
+</p>
 
-[![npm version](https://img.shields.io/npm/v/dywo.svg)](https://www.npmjs.com/package/dywo)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![npm downloads](https://img.shields.io/npm/dm/dywo.svg)](https://www.npmjs.com/package/dywo)
-[![GitHub stars](https://img.shields.io/github/stars/bluethefoxofficial/dywo.svg)](https://github.com/bluethefoxofficial/dywo-cli/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/bluethefoxofficial/dywo-cli.svg)](https://github.com/bluethefoxofficial/dywo-cli/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/bluethefoxofficial/dywo-cli.svg)](https://github.com/bluethefoxofficial/dywo-cli/pulls)
-[![Build Status](https://img.shields.io/travis/bluethefoxofficial/dywo-cli/main.svg)](https://travis-ci.org/bluethefoxofficial/dywo-cli)
-[![Coverage Status](https://img.shields.io/codecov/c/github/bluethefoxofficial/dywo-cli/main.svg)](https://codecov.io/gh/bluethefoxofficial/dywo-cli)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+<h1 align="center">Dywo</h1>
 
+<p align="center">
+  A flexible CLI tool for web project management
+</p>
 
+<p align="center">
+  <a href="https://www.npmjs.com/package/dywo"><img src="https://img.shields.io/npm/v/dywo.svg" alt="npm version"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://www.npmjs.com/package/dywo"><img src="https://img.shields.io/npm/dm/dywo.svg" alt="npm downloads"></a>
+  <a href="https://github.com/enclica/dywo-cli/stargazers"><img src="https://img.shields.io/github/stars/enclica/dywo-cli.svg" alt="GitHub stars"></a>
+  <a href="https://github.com/enclica/dywo-cli/issues"><img src="https://img.shields.io/github/issues/enclica/dywo-cli.svg" alt="GitHub issues"></a>
+  <a href="https://github.com/enclica/dywo-cli/pulls"><img src="https://img.shields.io/github/issues-pr/enclica/dywo-cli.svg" alt="GitHub pull requests"></a>
+</p>
 
-Dywo is a flexible Command Line Interface (CLI) tool for web project management. It simplifies the process of creating, developing, and managing web projects with a focus on vanilla JavaScript development.
+---
+
+**Dywo** is a flexible Command Line Interface (CLI) tool for web project management. It simplifies the process of creating, developing, and managing web projects with a focus on vanilla JavaScript development.
 
 ## Features
 
@@ -35,7 +42,7 @@ npm install -g dywo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/bluethefoxofficial/dywo-cli.git
+   git clone https://github.com/enclica/dywo-cli.git
    cd dywo-cli
    ```
 
@@ -147,21 +154,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-
 ## Support
 
-If you encounter any problems or have any questions, please open an issue on the GitHub repository.
-
-## Donations
-
-If you find Dywo helpful and want to support its development, consider making a donation. Your support is greatly appreciated and helps maintain and improve this tool!
-
-[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/bluethefox)
-
-You can make a donation via PayPal: [paypal.me/bluethefox](https://paypal.me/bluethefox)
-
-Every contribution, no matter how small, is sincerely appreciated and goes directly towards the time and resources dedicated to improving Dywo.
+If you encounter any problems or have any questions, please open an issue on the [GitHub repository](https://github.com/enclica/dywo-cli/issues).
 
 ---
 
-Made with ❤️ by Bluethefox
+Made with ❤️ by [Enclica Software](https://github.com/enclica)

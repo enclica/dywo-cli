@@ -1,0 +1,461 @@
+<template>
+  <div class="about">
+    <section class="about-hero">
+      <h1 class="about-title">About DYWO</h1>
+      <p class="about-lead">
+        DYWO (Dynamic Web Optimization) is a CLI tool and framework for building modern websites without the complexity of large frameworks.
+      </p>
+      <p class="about-body">
+        Write your components in <code>.dywo</code> Single File Components. DYWO compiles them into optimized HTML, CSS, and JS &mdash; ready to deploy anywhere.
+      </p>
+    </section>
+
+    <section class="playground">
+      <h2 class="playground-title">Interactive Playground</h2>
+      <p class="playground-desc">Try DYWO's reactivity right here.</p>
+
+      <div class="counter-card" dywo-system="counter">
+        <div class="counter-display" dywo-connect="counter">
+          <span dywo-class="counter-value, positive: count > 0, negative: count < 0, zero: count === 0">{{ count }}</span>
+        </div>
+        <div class="counter-label">Current Count</div>
+        <div class="counter-actions">
+          <button dywo-connect="counter" dywo-action="decrement" dywo-trigger="counter:decrement" class="btn btn-icon btn-danger-outline">&minus;</button>
+          <button dywo-connect="counter" dywo-action="reset" dywo-trigger="counter:reset" class="btn btn-outline">Reset</button>
+          <button dywo-connect="counter" dywo-action="increment" dywo-trigger="counter:increment" class="btn btn-icon btn-primary">+</button>
+        </div>
+        <div dywo-show="count > 10" class="counter-msg counter-msg-success">
+          You passed 10! Keep going!
+        </div>
+        <div dywo-show="count < 0" class="counter-msg counter-msg-warning">
+          Going negative!
+        </div>
+        <div dywo-show="count === 0" class="counter-msg counter-msg-neutral">
+          Back to zero. Click a button!
+        </div>
+      </div>
+    </section>
+
+    <section class="helpers-section">
+      <h2 class="section-title">Built-in Helpers</h2>
+      <p class="section-desc">DYWO ships with handy template helpers out of the box.</p>
+
+      <div class="helpers-grid">
+        <div class="helper-card">
+          <code class="helper-code">{{ '{{ year }}' }}</code>
+          <span class="helper-result">Current year: <strong>{{ year }}</strong></span>
+        </div>
+        <div class="helper-card">
+          <code class="helper-code">{{ '{{ random(1, 100) }}' }}</code>
+          <span class="helper-result">Random number: <strong>{{ random(1, 100) }}</strong></span>
+          <button dywo-on:click.prevent="reroll" class="btn btn-sm btn-ghost">Reroll</button>
+        </div>
+        <div class="helper-card">
+          <code class="helper-code">{{ '{{ upper(greeting) }}' }}</code>
+          <span class="helper-result">Result: <strong>{{ upper(greeting) }}</strong></span>
+        </div>
+        <div class="helper-card">
+          <code class="helper-code">{{ '{{ currency(price) }}' }}</code>
+          <span class="helper-result">Formatted: <strong>{{ currency(price) }}</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <h2 class="section-title">Two-Way Binding</h2>
+      <p class="section-desc">Type below and watch DYWO react instantly.</p>
+
+      <div class="form-card">
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" dywo-bind:value="userName" placeholder="Enter your name" class="form-input" />
+        </div>
+        <div dywo-show="userName.length > 0" class="form-preview">
+          Hello, <strong>{{ capitalize(userName) }}</strong>! Welcome to DYWO.
+        </div>
+        <div class="form-group">
+          <label class="form-label">Favorite Framework</label>
+          <select dywo-bind:value="favFramework" class="form-input">
+            <option value="">Choose one...</option>
+            <option dywo-for="fw in frameworks" value="{{ fw }}">{{ fw }}</option>
+          </select>
+        </div>
+        <div dywo-show="favFramework.length > 0" class="form-preview">
+          Great choice! <strong>{{ favFramework }}</strong> is awesome.
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<style scoped>
+.about {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+}
+
+.about-hero {
+  margin-bottom: 3.5rem;
+}
+
+.about-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.about-lead {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.about-body {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.about-body code {
+  background: var(--color-bg-alt);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--color-primary);
+  border: 1px solid var(--color-border-light);
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.section-desc {
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+}
+
+.playground {
+  margin-bottom: 4rem;
+}
+
+.playground-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.playground-desc {
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+}
+
+.counter-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.counter-display {
+  margin-bottom: 0.5rem;
+}
+
+.counter-value {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  transition: color var(--transition-fast);
+}
+
+.counter-value.positive {
+  color: var(--color-success);
+}
+
+.counter-value.negative {
+  color: var(--color-danger);
+}
+
+.counter-value.zero {
+  color: var(--color-text-light);
+}
+
+.counter-label {
+  font-size: 0.8125rem;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.counter-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 1.25rem;
+  border-radius: 50%;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 1px 2px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.btn-outline:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-light);
+  background: var(--color-bg-alt);
+}
+
+.btn-danger-outline {
+  background: transparent;
+  color: var(--color-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger-outline:hover {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: var(--color-danger);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.btn-ghost:hover {
+  color: var(--color-text);
+  background: var(--color-bg-alt);
+}
+
+.counter-msg {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.counter-msg-success {
+  background: rgba(16, 185, 129, 0.08);
+  color: var(--color-success);
+}
+
+.counter-msg-warning {
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--color-danger);
+}
+
+.counter-msg-neutral {
+  background: var(--color-bg-alt);
+  color: var(--color-text-light);
+}
+
+.helpers-section {
+  margin-bottom: 4rem;
+}
+
+.helpers-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.helper-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-fast);
+  flex-wrap: wrap;
+}
+
+.helper-card:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.helper-code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  background: var(--color-bg-alt);
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border-light);
+  white-space: nowrap;
+}
+
+.helper-result {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.helper-result strong {
+  color: var(--color-text);
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-bg-alt);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  background: var(--color-bg);
+}
+
+.form-preview {
+  padding: 1rem 1.25rem;
+  background: rgba(99, 102, 241, 0.04);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  margin-bottom: 1.25rem;
+}
+
+.form-preview strong {
+  color: var(--color-primary);
+}
+
+@media (max-width: 640px) {
+  .about {
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  .about-title {
+    font-size: 2rem;
+  }
+
+  .counter-value {
+    font-size: 3rem;
+  }
+
+  .helper-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+</style>
+
+<script>
+export default {
+  name: 'About',
+  data() {
+    return {
+      count: 0,
+      greeting: 'hello dywo',
+      price: 42.5,
+      userName: '',
+      favFramework: '',
+      frameworks: ['DYWO', 'React', 'Vue', 'Svelte', 'Solid']
+    };
+  },
+  methods: {
+    increment: function() {
+      this.count = this.count + 1;
+    },
+    decrement: function() {
+      this.count = this.count - 1;
+    },
+    reset: function() {
+      this.count = 0;
+    },
+    reroll: function() {
+      this.count = this.count;
+    }
+  }
+};
+</script>

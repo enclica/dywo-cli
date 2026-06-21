@@ -1,0 +1,90 @@
+<template>
+  <div class="not-found">
+    <div class="not-found-content">
+      <span class="error-code">404</span>
+      <h1 class="error-title">Page not found</h1>
+      <p class="error-desc">The page you're looking for doesn't exist or has been moved.</p>
+      <a href="/" dywo-link class="btn-home">
+        <span class="btn-home-arrow">&larr;</span>
+        Back to Home
+      </a>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem;
+  text-align: center;
+}
+
+.not-found-content {
+  max-width: 420px;
+}
+
+.error-code {
+  display: block;
+  font-size: 8rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.error-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.error-desc {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-text);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.btn-home:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-home-arrow {
+  transition: transform var(--transition-fast);
+}
+
+.btn-home:hover .btn-home-arrow {
+  transform: translateX(-3px);
+}
+</style>
+
+<script>
+export default {
+  name: 'NotFound'
+};
+</script>

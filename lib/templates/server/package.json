@@ -1,0 +1,14 @@
+{
+  "name": "{{PROJECT_NAME}}-server",
+  "version": "1.0.0",
+  "description": "DYWO Server API",
+  "main": "server.js",
+  "scripts": {
+    "dev": "dywo server start",
+    "build": "dywo server build",
+    "start": "node server.js",
+    "db:migrate": "dywo server db migrate",
+    "db:seed": "dywo server db seed"
+  },
+  "dependencies": {}
+}

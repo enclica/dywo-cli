@@ -1,6 +1,6 @@
 {
   "name": "dywo",
-  "version": "1.0.11",
+  "version": "2.0.0",
   "description": "Dywo - A flexible CLI tool for web project management",
   "main": "bin/dywo.js",
   "bin": {
@@ -9,7 +9,9 @@
   "scripts": {
     "start": "node bin/dywo.js",
     "prebuild": "node scripts/prepare-build.js",
-    "build": "pkg .",
+    "build": "node scripts/build-all.js",
+    "build:all": "node scripts/build-all.js",
+    "dinstall": "node scripts/install.js",
     "test": "jest"
   },
   "keywords": [
@@ -18,21 +20,29 @@
     "bundler",
     "project-management"
   ],
-  "author": "Bluethefox",
+  "author": "Enclica Software",
   "license": "MIT",
   "dependencies": {
+    "autoprefixer": "^10.4.16",
     "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
     "commander": "^8.3.0",
+    "cross-env": "^7.0.3",
+    "cssnano": "^6.0.1",
     "eslint": "^7.32.0",
     "express": "^4.17.1",
-    "fs-extra": "^10.0.0",
     "glob": "^7.2.0",
+    "html-minifier-terser": "^7.2.0",
     "html-webpack-plugin": "^5.5.0",
     "inquirer": "^8.2.0",
     "javascript-obfuscator": "^4.1.1",
     "mini-css-extract-plugin": "^2.9.1",
+    "postcss": "^8.4.31",
     "prettier": "^2.5.1",
+    "raw-loader": "^4.0.2",
+    "fs-extra": "^10.0.0",
     "webpack-dev-server": "^5.1.0",
+    "webpack-merge": "^5.10.0",
     "webpack-node-externals": "^3.0.0"
   },
   "devDependencies": {
@@ -53,13 +63,18 @@
   "pkg": {
     "scripts": [
       "bin/**/*.js",
-      "lib/**/*.js"
+      "lib/**/*.js",
+      "lib/compiler/**/*.js",
+      "lib/config/**/*.js",
+      "lib/runtime/**/*.js"
     ],
     "assets": [
       "lib/templates/**/*",
       "assets/dywo-icon.ico"
     ],
     "targets": [
+      "node18-linux-x64",
+      "node18-macos-x64",
       "node18-win-x64"
     ],
     "outputPath": "dist"
@@ -72,6 +87,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bluethefoxofficial/dywo-cli.git"
+    "url": "https://github.com/enclica/dywo-cli.git"
   }
 }

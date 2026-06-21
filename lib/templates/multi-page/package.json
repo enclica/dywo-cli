@@ -1,0 +1,12 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "description": "A DYWO multi-page website",
+  "scripts": {
+    "dev": "dywo dev",
+    "build": "dywo build",
+    "serve": "dywo serve"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

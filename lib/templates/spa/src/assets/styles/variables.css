@@ -1,0 +1,56 @@
+/* DYWO Design Tokens — import this file wherever you need the variables */
+
+:root {
+  /* Colors */
+  --color-primary: #0070f3;
+  --color-primary-dark: #0051b3;
+  --color-primary-light: #3b8ff5;
+  --color-secondary: #ff4081;
+  --color-text: #333;
+  --color-text-muted: #666;
+  --color-bg: #fff;
+  --color-bg-alt: #f9f9f9;
+  --color-border: #e0e0e0;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Fira Code', 'Cascadia Code', Menlo, monospace;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Layout */
+  --max-width: 1200px;
+  --content-width: 700px;
+  --nav-height: 64px;
+
+  /* Borders */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow: 0 2px 8px rgba(0,0,0,0.12);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+
+  /* Transitions */
+  --transition: 150ms ease;
+  --transition-slow: 300ms ease;
+}

@@ -1,0 +1,783 @@
+<template>
+  <div id="app" class="portfolio">
+    <nav class="nav" dywo-class="{ 'nav--scrolled': scrolled, 'nav--open': mobileOpen }">
+      <div class="nav-inner">
+        <a class="nav-logo" href="#home">{{ capitalize(name) }}</a>
+        <button class="nav-toggle" dywo-on:click="toggleMobile" aria-label="Toggle menu">
+          <span class="nav-toggle-bar"></span>
+        </button>
+        <ul class="nav-links" dywo-class="{ 'nav-links--open': mobileOpen }">
+          <li dywo-for="section in navSections">
+            <a href="{{ '#' + section.id }}" dywo-on:click="closeMobile" dywo-class="{ active: activeSection === section.id }">
+              {{ capitalize(section.label) }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <section id="home" class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <span class="hero-badge">Available for work</span>
+        <h1 class="hero-name">{{ name }}</h1>
+        <p class="hero-title">{{ title }}</p>
+        <p class="hero-bio">{{ bio }}</p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">
+            View Projects
+            <span class="btn-arrow">&darr;</span>
+          </a>
+          <a href="#contact" class="btn btn-glass">Get In Touch</a>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span class="hero-scroll-line"></span>
+      </div>
+    </section>
+
+    <section id="about" class="section about">
+      <div class="container">
+        <header class="section-header">
+          <span class="section-label">01 &mdash; About</span>
+          <h2 class="section-title">Who I Am</h2>
+        </header>
+        <div class="about-grid">
+          <div class="about-visual">
+            <div class="about-avatar">
+              <span class="about-initials">{{ initials }}</span>
+            </div>
+            <div class="about-stats">
+              <div class="stat" dywo-for="stat in stats">
+                <span class="stat-value">{{ stat.value }}</span>
+                <span class="stat-label">{{ capitalize(stat.label) }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="about-text">
+            <p dywo-for="paragraph in aboutParagraphs" class="about-paragraph">{{ paragraph }}</p>
+            <div class="about-actions">
+              <a href="{{ resumeUrl }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Download CV</a>
+              <a href="{{ githubUrl }}" class="btn btn-outline btn-sm" target="_blank" rel="noopener">GitHub Profile</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="section projects">
+      <div class="container">
+        <header class="section-header">
+          <span class="section-label">02 &mdash; Work</span>
+          <h2 class="section-title">Featured Projects</h2>
+        </header>
+        <div class="project-filters">
+          <button
+            class="filter-btn"
+            dywo-for="filter in projectFilters"
+            dywo-on:click="setFilter"
+            dywo-class="{ 'filter-btn--active': activeFilter === filter }"
+          >
+            {{ capitalize(filter) }}
+          </button>
+        </div>
+        <div class="project-grid">
+          <article
+            class="project-card"
+            dywo-for="project in filteredProjects"
+            dywo-show="project.visible !== false"
+          >
+            <div class="project-card-accent" dywo-style="{ background: project.gradient }"></div>
+            <div class="project-card-body">
+              <div class="project-card-top">
+                <span class="project-emoji">{{ project.emoji }}</span>
+                <h3 class="project-name">{{ project.name }}</h3>
+              </div>
+              <p class="project-desc">{{ truncate(project.desc, 120) }}</p>
+              <div class="project-tags">
+                <span class="tag" dywo-for="tag in project.tags">{{ tag }}</span>
+              </div>
+              <div class="project-links">
+                <a dywo-if="project.demo" href="{{ project.demo }}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">
+                  Live Demo
+                </a>
+                <a dywo-if="project.repo" href="{{ project.repo }}" target="_blank" rel="noopener" class="btn btn-sm btn-ghost">
+                  Source Code
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section skills">
+      <div class="container">
+        <header class="section-header">
+          <span class="section-label">03 &mdash; Expertise</span>
+          <h2 class="section-title">Skills &amp; Tools</h2>
+        </header>
+        <div class="skills-grid">
+          <div class="skill-group" dywo-for="group in skillGroups">
+            <h3 class="skill-group-title">{{ group.category }}</h3>
+            <p class="skill-group-desc">{{ group.description }}</p>
+            <div class="skill-chips">
+              <span class="skill-chip" dywo-for="skill in group.items">{{ skill }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact">
+      <div class="container">
+        <header class="section-header">
+          <span class="section-label">04 &mdash; Contact</span>
+          <h2 class="section-title">Let's Work Together</h2>
+        </header>
+        <p class="contact-intro">{{ contactIntro }}</p>
+
+        <form class="contact-form" dywo-on:submit.prevent="submitForm">
+          <div dywo-if="formSuccess" class="form-alert form-alert--success">
+            <span class="form-alert-icon">&#10003;</span>
+            <p>Message received! I'll get back to you within 24 hours.</p>
+          </div>
+
+          <div dywo-if="formError" class="form-alert form-alert--error">
+            <span class="form-alert-icon">&#10007;</span>
+            <p>Something went wrong. Please try again or email me directly.</p>
+          </div>
+
+          <div dywo-if="!formSuccess" class="form-fields">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="contact-name">Name</label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  class="form-input"
+                  dywo-model="contactForm.name"
+                  placeholder="Jane Doe"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-email">Email</label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  class="form-input"
+                  dywo-model="contactForm.email"
+                  placeholder="jane@example.com"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-message">Message</label>
+              <textarea
+                id="contact-message"
+                class="form-input form-textarea"
+                dywo-model="contactForm.message"
+                rows="6"
+                placeholder="Tell me about your project..."
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" dywo-bind:disabled="formSending">
+              {{ formSending ? 'Sending...' : 'Send Message' }}
+            </button>
+          </div>
+        </form>
+
+        <div class="social-bar">
+          <a
+            dywo-for="link in socialLinks"
+            href="{{ link.url }}"
+            target="_blank"
+            rel="noopener"
+            class="social-link"
+            aria-label="{{ link.label }}"
+          >
+            <span class="social-icon">{{ link.icon }}</span>
+            <span class="social-label">{{ link.label }}</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <p class="footer-copy">&copy; {{ year }} {{ capitalize(name) }}. All rights reserved.</p>
+        <p class="footer-credit">Built with <a href="https://github.com/bluethefoxofficial/dywo-cli" target="_blank" rel="noopener">DYWO</a></p>
+      </div>
+    </footer>
+  </div>
+</template>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --c-primary: #6366f1;
+  --c-primary-dark: #4f46e5;
+  --c-primary-light: #818cf8;
+  --c-primary-glow: rgba(99, 102, 241, 0.15);
+  --c-accent: #06b6d4;
+  --c-accent-light: #22d3ee;
+  --c-success: #10b981;
+  --c-danger: #ef4444;
+  --c-text: #0f172a;
+  --c-text-secondary: #475569;
+  --c-text-muted: #94a3b8;
+  --c-bg: #ffffff;
+  --c-bg-alt: #f8fafc;
+  --c-bg-card: #ffffff;
+  --c-border: #e2e8f0;
+  --c-border-light: #f1f5f9;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --max-w: 1140px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-full: 9999px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+  --shadow-xl: 0 24px 48px rgba(0,0,0,0.1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 150ms var(--ease);
+  --t-base: 250ms var(--ease);
+  --t-slow: 400ms var(--ease);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-sans); color: var(--c-text); background: var(--c-bg); line-height: 1.7; }
+a { color: var(--c-primary); text-decoration: none; transition: color var(--t-fast); }
+a:hover { color: var(--c-primary-dark); }
+img { max-width: 100%; display: block; }
+::selection { background: var(--c-primary); color: white; }
+
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+
+/* ── Nav ─────────────────────────────────────────── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 1rem 0;
+  transition: background var(--t-base), box-shadow var(--t-base), padding var(--t-base);
+}
+.nav--scrolled {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: 0 1px 0 var(--c-border), var(--shadow-sm);
+  padding: 0.6rem 0;
+}
+.nav-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-weight: 800; font-size: 1.35rem; color: var(--c-primary);
+  letter-spacing: -0.02em;
+}
+.nav-links {
+  display: flex; gap: 0.25rem; list-style: none;
+}
+.nav-links a {
+  display: block; padding: 0.5rem 1rem; border-radius: var(--r-sm);
+  font-weight: 500; font-size: 0.9rem; color: var(--c-text-secondary);
+  transition: color var(--t-fast), background var(--t-fast);
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--c-primary); background: var(--c-primary-glow); }
+
+.nav-toggle {
+  display: none; background: none; border: none; cursor: pointer;
+  width: 32px; height: 32px; position: relative;
+}
+.nav-toggle-bar,
+.nav-toggle-bar::before,
+.nav-toggle-bar::after {
+  display: block; width: 20px; height: 2px; background: var(--c-text);
+  border-radius: 2px; transition: transform var(--t-base), opacity var(--t-fast);
+  position: absolute; left: 6px;
+}
+.nav-toggle-bar { top: 15px; }
+.nav-toggle-bar::before { content: ''; top: -6px; }
+.nav-toggle-bar::after { content: ''; top: 6px; }
+.nav--open .nav-toggle-bar { background: transparent; }
+.nav--open .nav-toggle-bar::before { transform: rotate(45deg) translate(4px, 4px); }
+.nav--open .nav-toggle-bar::after { transform: rotate(-45deg) translate(4px, -4px); }
+
+/* ── Hero ────────────────────────────────────────── */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 8rem 1.5rem 4rem; position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, var(--c-primary-glow) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(6,182,212,0.08) 0%, transparent 50%);
+}
+.hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, var(--c-border) 1px, transparent 0);
+  background-size: 40px 40px; opacity: 0.4;
+}
+.hero-content { position: relative; z-index: 1; max-width: 720px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 1rem; border-radius: var(--r-full);
+  background: rgba(16,185,129,0.1); color: var(--c-success);
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em;
+  margin-bottom: 1.5rem; border: 1px solid rgba(16,185,129,0.2);
+}
+.hero-badge::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--c-success); animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+.hero-name {
+  font-size: clamp(2.8rem, 8vw, 5.5rem); font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, var(--c-text) 0%, var(--c-primary) 50%, var(--c-accent) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-title {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--c-text-secondary);
+  font-weight: 500; margin-bottom: 1.25rem;
+}
+.hero-bio {
+  font-size: 1.1rem; color: var(--c-text-muted); max-width: 540px;
+  margin: 0 auto 2.5rem; line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.hero-scroll {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+}
+.hero-scroll-line {
+  display: block; width: 1px; height: 48px; background: var(--c-border);
+  position: relative; overflow: hidden;
+}
+.hero-scroll-line::after {
+  content: ''; position: absolute; top: -48px; left: 0;
+  width: 1px; height: 48px; background: var(--c-primary);
+  animation: scrollLine 2s infinite;
+}
+@keyframes scrollLine {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(96px); }
+}
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.7rem 1.5rem; border-radius: var(--r-sm);
+  font-weight: 600; font-size: 0.9rem; cursor: pointer;
+  border: 1.5px solid transparent; font-family: inherit;
+  transition: all var(--t-fast); text-decoration: none;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-primary {
+  background: var(--c-primary); color: white; border-color: var(--c-primary);
+  box-shadow: 0 2px 8px rgba(99,102,241,0.25);
+}
+.btn-primary:hover { background: var(--c-primary-dark); border-color: var(--c-primary-dark); color: white; box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
+.btn-outline { background: transparent; color: var(--c-primary); border-color: var(--c-primary); }
+.btn-outline:hover { background: var(--c-primary); color: white; }
+.btn-glass {
+  background: rgba(255,255,255,0.7); color: var(--c-text);
+  border-color: var(--c-border); backdrop-filter: blur(8px);
+}
+.btn-glass:hover { background: white; border-color: var(--c-text-muted); color: var(--c-text); }
+.btn-ghost { background: transparent; color: var(--c-text-secondary); border-color: var(--c-border); }
+.btn-ghost:hover { color: var(--c-primary); border-color: var(--c-primary); }
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
+.btn-lg { padding: 0.85rem 2rem; font-size: 1rem; }
+.btn-arrow { transition: transform var(--t-fast); }
+.btn:hover .btn-arrow { transform: translateY(2px); }
+
+/* ── Sections ────────────────────────────────────── */
+.section { padding: 6rem 0; }
+.section-header { text-align: center; margin-bottom: 3.5rem; }
+.section-label {
+  display: block; font-size: 0.8rem; font-weight: 600;
+  color: var(--c-primary); text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800;
+  letter-spacing: -0.02em; color: var(--c-text);
+}
+
+/* ── About ───────────────────────────────────────── */
+.about { background: var(--c-bg); }
+.about-grid {
+  display: grid; grid-template-columns: 280px 1fr;
+  gap: 4rem; align-items: start;
+}
+.about-visual { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+.about-avatar {
+  width: 160px; height: 160px; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--c-primary), var(--c-accent));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 32px rgba(99,102,241,0.25);
+  transition: transform var(--t-base);
+}
+.about-avatar:hover { transform: rotate(-3deg) scale(1.03); }
+.about-initials { font-size: 3rem; font-weight: 900; color: white; letter-spacing: 0.05em; }
+.about-stats { display: flex; gap: 1.5rem; }
+.stat { text-align: center; }
+.stat-value { display: block; font-size: 1.5rem; font-weight: 800; color: var(--c-primary); }
+.stat-label { font-size: 0.75rem; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.about-paragraph { color: var(--c-text-secondary); margin-bottom: 1rem; font-size: 1.05rem; }
+.about-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+
+/* ── Projects ────────────────────────────────────── */
+.projects { background: var(--c-bg-alt); }
+.project-filters {
+  display: flex; justify-content: center; gap: 0.5rem;
+  margin-bottom: 2.5rem; flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 0.45rem 1.1rem; border-radius: var(--r-full);
+  background: var(--c-bg-card); border: 1px solid var(--c-border);
+  font-size: 0.85rem; font-weight: 500; color: var(--c-text-secondary);
+  cursor: pointer; font-family: inherit;
+  transition: all var(--t-fast);
+}
+.filter-btn:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.filter-btn--active {
+  background: var(--c-primary); color: white;
+  border-color: var(--c-primary);
+}
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+.project-card {
+  background: var(--c-bg-card); border-radius: var(--r-md);
+  border: 1px solid var(--c-border); overflow: hidden;
+  transition: transform var(--t-base), box-shadow var(--t-base);
+  position: relative;
+}
+.project-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.project-card-accent { height: 4px; }
+.project-card-body { padding: 1.75rem; }
+.project-card-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.project-emoji { font-size: 2rem; }
+.project-name { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+.project-desc { color: var(--c-text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.25rem; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.25rem; }
+.tag {
+  padding: 0.2rem 0.65rem; background: var(--c-primary-glow);
+  color: var(--c-primary); border-radius: var(--r-full);
+  font-size: 0.75rem; font-weight: 600;
+}
+.project-links { display: flex; gap: 0.5rem; }
+
+/* ── Skills ──────────────────────────────────────── */
+.skills { background: var(--c-bg); }
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+.skill-group {
+  padding: 2rem; background: var(--c-bg-alt);
+  border-radius: var(--r-md); border: 1px solid var(--c-border-light);
+  transition: box-shadow var(--t-base), transform var(--t-base);
+}
+.skill-group:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.skill-group-title {
+  font-size: 1.1rem; font-weight: 700; color: var(--c-text);
+  margin-bottom: 0.35rem;
+}
+.skill-group-desc {
+  font-size: 0.85rem; color: var(--c-text-muted); margin-bottom: 1.25rem;
+}
+.skill-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.skill-chip {
+  padding: 0.35rem 0.85rem; background: var(--c-bg-card);
+  border: 1px solid var(--c-border); border-radius: var(--r-full);
+  font-size: 0.85rem; font-weight: 500; color: var(--c-text-secondary);
+  transition: all var(--t-fast);
+}
+.skill-chip:hover {
+  border-color: var(--c-primary); color: var(--c-primary);
+  background: var(--c-primary-glow); transform: translateY(-1px);
+}
+
+/* ── Contact ─────────────────────────────────────── */
+.contact { background: var(--c-bg-alt); }
+.contact .container { max-width: 680px; }
+.contact-intro {
+  text-align: center; color: var(--c-text-secondary);
+  font-size: 1.05rem; margin-bottom: 2.5rem; margin-top: -1.5rem;
+}
+.contact-form {
+  background: var(--c-bg-card); padding: 2.5rem;
+  border-radius: var(--r-lg); border: 1px solid var(--c-border);
+  box-shadow: var(--shadow-sm);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { margin-bottom: 1.25rem; }
+.form-label {
+  display: block; font-weight: 600; font-size: 0.85rem;
+  color: var(--c-text); margin-bottom: 0.4rem;
+}
+.form-input {
+  width: 100%; padding: 0.7rem 1rem;
+  border: 1.5px solid var(--c-border); border-radius: var(--r-sm);
+  font-family: inherit; font-size: 0.95rem; color: var(--c-text);
+  background: var(--c-bg); transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+.form-input::placeholder { color: var(--c-text-muted); }
+.form-input:focus {
+  outline: none; border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px var(--c-primary-glow);
+}
+.form-textarea { resize: vertical; min-height: 120px; }
+.form-alert {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1.25rem; border-radius: var(--r-sm);
+  margin-bottom: 1.5rem; font-size: 0.95rem; font-weight: 500;
+}
+.form-alert--success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.form-alert--error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.form-alert-icon { font-size: 1.25rem; flex-shrink: 0; }
+
+.social-bar {
+  display: flex; justify-content: center; gap: 1rem;
+  margin-top: 3rem;
+}
+.social-link {
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+  padding: 1rem; border-radius: var(--r-md);
+  transition: all var(--t-fast); min-width: 80px;
+}
+.social-link:hover { background: var(--c-bg-card); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+.social-icon { font-size: 1.5rem; }
+.social-label { font-size: 0.7rem; font-weight: 600; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ── Footer ──────────────────────────────────────── */
+.footer {
+  background: var(--c-text); color: var(--c-text-muted);
+  padding: 2.5rem 0; text-align: center;
+}
+.footer-inner { display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-size: 0.85rem; }
+.footer-credit { font-size: 0.8rem; }
+.footer a { color: var(--c-primary-light); }
+.footer a:hover { color: white; }
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(16px); padding: 1rem;
+    border-bottom: 1px solid var(--c-border);
+    box-shadow: var(--shadow-md);
+  }
+  .nav-links--open { display: flex; }
+  .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .about-visual { flex-direction: row; }
+  .about-stats { flex-direction: column; gap: 0.75rem; }
+  .project-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; gap: 0.5rem; }
+  .contact-form { padding: 1.5rem; }
+  .hero { padding: 6rem 1.5rem 3rem; }
+}
+</style>
+
+<script>
+export default {
+  name: 'Portfolio',
+  data() {
+    return {
+      name: '{{PROJECT_NAME}}',
+      initials: 'YN',
+      title: 'Full-Stack Developer & UI Designer',
+      bio: 'I craft fast, accessible, and visually stunning web experiences. Passionate about clean code, thoughtful design, and open source.',
+      resumeUrl: '/resume.pdf',
+      githubUrl: 'https://github.com/',
+      contactIntro: 'Currently open to full-time roles and freelance projects. Whether you have a question, a project idea, or just want to connect — my inbox is always open.',
+
+      navSections: [
+        { id: 'about', label: 'about' },
+        { id: 'projects', label: 'projects' },
+        { id: 'skills', label: 'skills' },
+        { id: 'contact', label: 'contact' }
+      ],
+      activeSection: '',
+      mobileOpen: false,
+
+      stats: [
+        { value: '5+', label: 'years exp' },
+        { value: '30+', label: 'projects' },
+        { value: '12', label: 'open source' }
+      ],
+
+      aboutParagraphs: [
+        'I am a developer who thrives at the intersection of design and engineering. With years of experience spanning startups and product teams, I build interfaces that are not only beautiful but performant and accessible to everyone.',
+        'My toolkit spans the full stack — from pixel-perfect CSS and reactive frontends to robust APIs and database design. I believe the best software is born from empathy, iteration, and attention to detail.',
+        'Outside of work, I contribute to open-source projects, write about web development, and explore new trails on my mountain bike.'
+      ],
+
+      projects: [
+        {
+          name: 'Project Alpha',
+          desc: 'A real-time collaboration platform for distributed teams with live cursors, conflict-free editing, and instant sync across devices.',
+          emoji: '🚀',
+          gradient: 'linear-gradient(135deg, #6366f1, #06b6d4)',
+          tags: ['DYWO', 'Node.js', 'WebSockets', 'CRDT'],
+          demo: 'https://example.com',
+          repo: 'https://github.com/',
+          category: 'fullstack'
+        },
+        {
+          name: 'Project Beta',
+          desc: 'A modern e-commerce storefront with server-side rendering, optimistic UI updates, and seamless Stripe checkout integration.',
+          emoji: '🛒',
+          gradient: 'linear-gradient(135deg, #10b981, #06b6d4)',
+          tags: ['DYWO', 'Stripe', 'PostgreSQL', 'SSR'],
+          demo: 'https://example.com',
+          repo: 'https://github.com/',
+          category: 'fullstack'
+        },
+        {
+          name: 'Project Gamma',
+          desc: 'A CLI toolkit that automates repetitive DevOps tasks — cutting average deploy times from 20 minutes down to 2.',
+          emoji: '⚙️',
+          gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+          tags: ['Node.js', 'Bash', 'Docker', 'CI/CD'],
+          demo: null,
+          repo: 'https://github.com/',
+          category: 'tools'
+        },
+        {
+          name: 'Project Delta',
+          desc: 'An interactive data dashboard with real-time charts, customizable widgets, and exportable PDF reports for business analytics.',
+          emoji: '📊',
+          gradient: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+          tags: ['DYWO', 'D3.js', 'REST API', 'Charts'],
+          demo: 'https://example.com',
+          repo: null,
+          category: 'frontend'
+        }
+      ],
+
+      projectFilters: ['all', 'fullstack', 'frontend', 'tools'],
+      activeFilter: 'all',
+
+      skillGroups: [
+        {
+          category: 'Frontend',
+          description: 'Building responsive, accessible user interfaces',
+          items: ['HTML5', 'CSS3', 'JavaScript', 'DYWO', 'TypeScript', 'Responsive Design', 'A11y']
+        },
+        {
+          category: 'Backend',
+          description: 'Designing robust APIs and server-side systems',
+          items: ['Node.js', 'Express', 'REST APIs', 'GraphQL', 'PostgreSQL', 'Redis', 'WebSockets']
+        },
+        {
+          category: 'DevOps & Tools',
+          description: 'Shipping code reliably and efficiently',
+          items: ['Git', 'Docker', 'CI/CD', 'Linux', 'GitHub Actions', 'Nginx']
+        },
+        {
+          category: 'Design',
+          description: 'Crafting intuitive visual experiences',
+          items: ['Figma', 'UI/UX', 'Design Systems', 'Prototyping', 'Motion Design']
+        }
+      ],
+
+      socialLinks: [
+        { label: 'GitHub', icon: '🐙', url: 'https://github.com/' },
+        { label: 'LinkedIn', icon: '💼', url: 'https://linkedin.com/' },
+        { label: 'Twitter', icon: '🐦', url: 'https://twitter.com/' },
+        { label: 'Email', icon: '📧', url: 'mailto:hello@example.com' }
+      ],
+
+      contactForm: { name: '', email: '', message: '' },
+      formSending: false,
+      formSuccess: false,
+      formError: false,
+
+      scrolled: false,
+      year: new Date().getFullYear()
+    };
+  },
+  computed: {
+    filteredProjects() {
+      if (this.activeFilter === 'all') return this.projects;
+      return this.projects.filter(function(p) {
+        return p.category === this.activeFilter;
+      }.bind(this));
+    }
+  },
+  mounted() {
+    var self = this;
+    window.addEventListener('scroll', function() {
+      self.scrolled = window.scrollY > 40;
+      self.detectSection();
+    }, { passive: true });
+    this.detectSection();
+  },
+  methods: {
+    toggleMobile() {
+      this.mobileOpen = !this.mobileOpen;
+    },
+    closeMobile() {
+      this.mobileOpen = false;
+    },
+    setFilter(e) {
+      var text = e.target.textContent.trim().toLowerCase();
+      this.activeFilter = text;
+    },
+    detectSection() {
+      var sections = ['about', 'projects', 'skills', 'contact'];
+      var scrollPos = window.scrollY + 200;
+      for (var i = sections.length - 1; i >= 0; i--) {
+        var el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollPos) {
+          this.activeSection = sections[i];
+          return;
+        }
+      }
+      this.activeSection = '';
+    },
+    submitForm() {
+      var self = this;
+      this.formSending = true;
+      this.formError = false;
+      new Promise(function(resolve) {
+        setTimeout(resolve, 1000);
+      }).then(function() {
+        self.formSuccess = true;
+        self.contactForm = { name: '', email: '', message: '' };
+      }).catch(function() {
+        self.formError = true;
+      }).finally(function() {
+        self.formSending = false;
+      });
+    }
+  }
+};
+</script>
